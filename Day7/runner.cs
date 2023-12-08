@@ -25,12 +25,14 @@ var suits = new Dictionary<char, int> {
 
 HandTypes GetHandType (IEnumerable<char> cards) {
     var groupedHand = cards.GroupBy(x => x);
-    if (groupedHand.Any(x => x.Count() == 5)) return HandTypes.FiveOfAKind;
-    else if (groupedHand.Any(x => x.Count() == 4)) return HandTypes.FourOfAKind;
-    else if (groupedHand.Any(x => x.Count() == 3) && groupedHand.Any(x => x.Count() == 2)) return HandTypes.FullHouse;
-    else if (groupedHand.Any(x => x.Count() == 3)) return HandTypes.ThreeOfAKind;
-    else if (groupedHand.Count(x => x.Count() == 2) == 2) return HandTypes.TwoPairs;
-    else if (groupedHand.Any(x => x.Count() == 2)) return HandTypes.OnePair;
+    var amounts = groupedHand.Select(x => x.Count()).OrderByDescending(x => x).ToList();
+
+    if (amounts[0] == 5) return HandTypes.FiveOfAKind;
+    else if (amounts[0] == 4) return HandTypes.FourOfAKind;
+    else if (amounts[0] == 3 && amounts[1] == 2) return HandTypes.FullHouse;
+    else if (amounts[0] == 3) return HandTypes.ThreeOfAKind;
+    else if (amounts[0] == 2 && amounts[1] == 2) return HandTypes.TwoPairs;
+    else if (amounts[0] == 2) return HandTypes.OnePair;
     else return HandTypes.HighCard;
 }
 

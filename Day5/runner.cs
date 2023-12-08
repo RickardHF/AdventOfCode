@@ -120,20 +120,4 @@ long GetSeedFromLocation(long location) {
     return seed;
 }
 
-var seedLocations = new List<(long, long)>();
-
-foreach(var locationMaps in maps["humidity-to-location"]) {
-    var locationRangeStart = locationMaps.DestinationRangeStart;
-    var locationRangeEnd = locationMaps.DestinationRangeStart + locationMaps.Length;
-    var seedRangeStart = GetSeedFromLocation(locationRangeStart);
-    var seedRangeEnd = GetSeedFromLocation(locationRangeEnd);
-    if (seedRangeStart < seedRangeEnd) seedLocations.Add((seedRangeStart, seedRangeEnd));
-    else seedLocations.Add((seedRangeEnd, seedRangeStart));
-}
-
-foreach(var seedRange in seedRanges) {
-    Console.WriteLine($"Seed range: {seedRange}");
-    var matchingLocations = seedLocations.Where(x => seedRange.Item1 >= x.Item2 && seedRange.Item2 <= x.Item1).ToList();
-    Console.WriteLine($"Matching locations: {string.Join(", ", matchingLocations)}");
-    
-}
+var lowestLocationMap = maps["humidity-to-location"].OrderBy(x => x.DestinationRangeStart).FirstOrDefault();
